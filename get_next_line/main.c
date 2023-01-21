@@ -2,23 +2,30 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <stdio.h>
 
-static void	ft_putstr(char *str)
+int main(int ac, char **av)
 {
-	while (*str)
-		write(1, &*str++, 1);
-}
-
-int main(void)
-{
+    int     i;
     int     fd;
-    char    *buf;
-    fd = open("file.txt", O_RDONLY);
+    char    *str;
+    if (ac != 2)
+    {
+        printf("Wrong number of arguments !\n");
+        return (-1);
+    }
+    i = 0;
+    fd = open("/Users/ykifadji/francinette/tests/get_next_line/fsoares/variable_nls.txt", O_RDONLY);
     if (fd == -1)
-        write(1, "open() failed\n", 15);
-    buf = get_next_line(fd);
-    ft_putstr(buf);
-    if (close(fd) == -1)
-        write(1, "close() failed\n", 16);
+        printf("open() failed\n");
+    while (i < atoi(av[1]))
+    {
+        str = get_next_line(fd);
+        printf("\033[0;32m%s\033[0m", str);
+        i++;
+    }
+    close(fd);
+    free (str);
+    //system("leaks a.out");
     return (0);
 }
