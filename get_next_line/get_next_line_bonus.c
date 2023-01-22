@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ykifadji <ykifadji@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/15 15:28:35 by ykifadji          #+#    #+#             */
-/*   Updated: 2023/01/22 12:53:51 by ykifadji         ###   ########.fr       */
+/*   Created: 2023/01/22 11:38:55 by ykifadji          #+#    #+#             */
+/*   Updated: 2023/01/22 13:21:08 by ykifadji         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*trim_temp(char *temp, char *final)
 {
@@ -72,28 +72,28 @@ char	*ft_error(char *final, char *temp)
 
 char	*get_next_line(int fd)
 {
-	char		buf[BUFFER_SIZE + 1];
-	static char	temp[BUFFER_SIZE + 1];
-	int			ret;
-	char		*final;
+	t_list		var;
+	static char	temp[1024][BUFFER_SIZE + 1];
 
-	ret = 1;
-	buf[0] = '\0';
-	final = malloc(sizeof(char));
-	final[0] = '\0';
-	if (ft_strchr(temp, '\n') && *temp)
-		return (trim_temp(temp, final));
-	final = ft_strjoin(final, temp, 0);
-	while (ret && !ft_strchr(buf, '\n'))
+	var.ret = 1;
+	var.buf[0] = '\0';
+	if (fd < 0 || fd > 1024)
+		return (0);
+	var.final = malloc(sizeof(char));
+	var.final[0] = '\0';
+	if (ft_strchr(temp[fd], '\n') && *temp[fd])
+		return (trim_temp(temp[fd], var.final));
+	var.final = ft_strjoin(var.final, temp[fd], 0);
+	while (var.ret && !ft_strchr(var.buf, '\n'))
 	{
-		ret = read(fd, buf, BUFFER_SIZE);
-		if (ret == -1)
-			return (get_l(temp, final, buf, ret));
-		final = get_l(temp, final, buf, ret);
+		var.ret = read(fd, var.buf, BUFFER_SIZE);
+		if (var.ret == -1)
+			return (get_l(temp[fd], var.final, var.buf, var.ret));
+		var.final = get_l(temp[fd], var.final, var.buf, var.ret);
 	}
-	if (ret == 0 && final[0] == '\0')
-		return (ft_error(final, temp));
-	else if (ret == 0 && !ft_strchr(temp, '\n'))
-		temp[0] = 0;
-	return (final);
+	if (var.ret == 0 && var.final[0] == '\0')
+		return (ft_error(var.final, temp[fd]));
+	else if (var.ret == 0 && !ft_strchr(temp[fd], '\n'))
+		temp[fd][0] = 0;
+	return (var.final);
 }

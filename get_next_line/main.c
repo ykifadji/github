@@ -15,7 +15,7 @@ int main(int ac, char **av)
         return (-1);
     }
     i = 0;
-    fd = open("/Users/ykifadji/francinette/tests/get_next_line/fsoares/variable_nls.txt", O_RDONLY);
+    fd = open("file.txt", O_RDONLY);
     if (fd == -1)
         printf("open() failed\n");
     while (i < atoi(av[1]))
